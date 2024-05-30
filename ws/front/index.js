@@ -3,10 +3,15 @@ import './assets/js/stomp.js';
 var stomp_client; 
 var SUBSCRIPTION;
 var DESTINATION;
-const server_url = "http://127.0.0.1:5000";
-
+var ROOM_CODE;
+const SERVER_URL = "http://127.0.0.1:5000";
+const WS_URL = "127.0.0.1:15674"
 
 //////////////////////////////////////////// Stomp Listenter Functions //////////////////////////////////////////////
+
+function refreshMembers(){
+    // refresh participant list
+}
 
 function inputKeyword(){
     // change component to input keyword
@@ -41,16 +46,19 @@ function onMessageReceived(payload) {
     var body = payload.body;
 
     switch(body['type']){
-        case 'Preparing':
+        case 'refresh_member':
+            refreshMembers(members);
+            break
+        case 'ready_game':
             inputKeyword();
             break
-        case 'GameStart':
+        case 'start_game':
             startGame(image);
             break
-        case 'GameProgress':
+        case 'result_similarity':
             setOtherPlayerProgress(progresses);
             break
-        case 'GameEnd':
+        case 'end_game':
             showGameResult(result);
             break
         default:
@@ -107,65 +115,56 @@ const closeSocket = () => {
 $(".createRoomBtn").on('click', function(){
     const xhr = new XMLHttpRequest();
     
-    xhr.open("POST", server_url+"/api/create_room", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-    const nickname = $(".nickname").value;
-
-    const body = JSON.stringify({
-        name: nickname
-    });
+    xhr.open("GET", SERVER_URL+"/api/create_room", true);
+    // xhr.open("POST", SERVER_URL+"/api/create_room", true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // const body = JSON.stringify({name: nickname});
 
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const response_text = JSON.parse(xhr.responseText);
-            console.log(`url: ${response_text.ws_url}`);
-            console.log(`dest: ${response_text.ws_destination}`);
-            openSocket(response_text.ws_url, response_text.ws_destination);
-            
+            var dest = "/topic/" + response_text.room_code;
+            openSocket(WS_URL, dest);
+            // openSocket(response_text.ws_url, response_text.ws_destination);
         } else {
             console.log(`Error: ${xhr.responseText}`);
         }
     };
-
-    xhr.send(body);
+    xhr.send();
 });
+
 
 // Enter room
 $(".enterRoomBtn").on('click', function(){
+    var room_code = $(".room_code").text;
+
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", server_url+"/api/enter_room/", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
 
-    const room_id = $(".room_id").value;
-    const nickname = $(".nickname").value;
-
-    const body = JSON.stringify({
-        room_id: room_id,
-        name: nickname
-    });
+    xhr.open("GET", SERVER_URL+"/api/enter_room/"+room_code, true);
+    // xhr.open("POST", SERVER_URL+"/api/enter_room/", true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // const body = JSON.stringify({room_id: room_id, name: nickname});
 
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const response_text = JSON.parse(xhr.responseText);
-            console.log(response_text)
-            console.log(`url: ${response_text.ws_url}`);
-            console.log(`dest: ${response_text.ws_destination}`);
-            openSocket(response_text.ws_url, response_text.ws_destination);
+            var dest = "/topic/" + response_text.room_code;
+            openSocket(WS_URL, dest);
+            // openSocket(response_text.ws_url, response_text.ws_destination);
             
         } else {
             console.log(`Error: ${xhr.responseText}`);
         }
     };
 
-    xhr.send(body);
+    xhr.send();
 
 });
 
 // Start Game
 $(".startGameBtn").on('click', function(){
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", server_url+"/api/v1/game_start", true);
+    xhr.open("POST", SERVER_URL+"/api/v1/game_start", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     
@@ -175,7 +174,7 @@ $(".startGameBtn").on('click', function(){
 // Send Keyword
 $(".submitKeywordBtn").on('click', function(){
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", server_url+"/api/collect_keyword/{단어}", true);
+    xhr.open("POST", SERVER_URL+"/api/collect_keyword/{단어}", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
 });
@@ -183,7 +182,7 @@ $(".submitKeywordBtn").on('click', function(){
 // Guess word
 $(".guessBtn").on('click', function(){
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", server_url+"/api/v1/check_similartiy/{단어}", true);
+    xhr.open("POST", SERVER_URL+"/api/v1/check_similartiy/{단어}", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
 });
@@ -216,20 +215,6 @@ $(".send").on('click', function(){
 });
 
 $(".send_s").on('click', function(){
-    const xhr = new XMLHttpRequest();
-    const server_url = "http://127.0.0.1:5000";
-    xhr.open("GET", server_url+"/room/send_msg", true);
-
-    xhr.onload = () => {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            const response_text = JSON.parse(xhr.responseText);
-            
-        } else {
-            console.log(`Error: ${xhr.responseText}`);
-        }
-    };
-
-    xhr.send();
 });
 
 
