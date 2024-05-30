@@ -40,7 +40,8 @@ def create_room():
         conn = stomp.Connection([(MQurl, MQport)])
         conn.set_listener('', TestListener())
         conn.connect()
-        conn.subscribe(destination=destination, id=1, ack='auto')
+        id = 1
+        conn.subscribe(destination=destination, id=id, ack='auto')
 
         room_list.append(destination)
     

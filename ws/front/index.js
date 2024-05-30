@@ -3,13 +3,60 @@ import './assets/js/stomp.js';
 var stomp_client; 
 var SUBSCRIPTION;
 var DESTINATION;
+const server_url = "http://127.0.0.1:5000";
+
+
+//////////////////////////////////////////// Stomp Listenter Functions //////////////////////////////////////////////
+
+function inputKeyword(){
+    // change component to input keyword
+}
+
+function startGame(image){
+    // show image
+    // change component to guess
+}
+
+function setOtherPlayerProgress(progresses){
+    // show&edit other player's progress
+}
+
+function showGameResult(result){
+    // show winner
+    // (optional) show player's keyword
+    // close socket
+}
+
+//////////////////////////////////////////// Stomp Connection //////////////////////////////////////////////
 
 
 function onMessageReceived(payload) {
     console.log('Message Received');
+    console.log(payload);
     console.log(payload.body);
+    
+    // print log for test
+    $(".test").append(`<p>${payload}</p>`);
 
-    $(".test").append(`<p>${payload.body}</p>`);
+    var body = payload.body;
+
+    switch(body['type']){
+        case 'Preparing':
+            inputKeyword();
+            break
+        case 'GameStart':
+            startGame(image);
+            break
+        case 'GameProgress':
+            setOtherPlayerProgress(progresses);
+            break
+        case 'GameEnd':
+            showGameResult(result);
+            break
+        default:
+            // error handling
+    }
+
 };
 
 
@@ -35,11 +82,11 @@ const openSocket = (ws_url, destination) => {
 
 };
 
-const sendSocket = (msg) => {
-    var headers = {};
-    var body = msg;
-    stomp_client.send(DESTINATION, headers, body);
-}
+// const sendSocket = (msg) => {
+//     var headers = {};
+//     var body = msg;
+//     stomp_client.send(DESTINATION, headers, body);
+// }
 
 const closeSocket = () => {
     stomp_client.unsubscribe(SUBSCRIPTION);
@@ -53,22 +100,19 @@ const closeSocket = () => {
 }
 
 
+//////////////////////////////////////////// Interaction //////////////////////////////////////////////
 
 
-
-
-
-$(".create").on('click', function(){
+// Create Room
+$(".createRoomBtn").on('click', function(){
     const xhr = new XMLHttpRequest();
-    const server_url = "http://127.0.0.1:5000";
-    xhr.open("POST", server_url+"/room/create", true);
+    
+    xhr.open("POST", server_url+"/api/create_room", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
-    const room_id = "12345";
-    const nickname = "hong_gil_dong";
+    const nickname = $(".nickname").value;
 
     const body = JSON.stringify({
-        room_id: room_id,
         name: nickname
     });
 
@@ -77,7 +121,7 @@ $(".create").on('click', function(){
             const response_text = JSON.parse(xhr.responseText);
             console.log(`url: ${response_text.ws_url}`);
             console.log(`dest: ${response_text.ws_destination}`);
-            // openSocket(response_text.ws_url, response_text.ws_destination);
+            openSocket(response_text.ws_url, response_text.ws_destination);
             
         } else {
             console.log(`Error: ${xhr.responseText}`);
@@ -87,14 +131,14 @@ $(".create").on('click', function(){
     xhr.send(body);
 });
 
-$(".enter").on('click', function(){
+// Enter room
+$(".enterRoomBtn").on('click', function(){
     const xhr = new XMLHttpRequest();
-    const server_url = "http://127.0.0.1:5000";
-    xhr.open("POST", server_url+"/room/enter", true);
+    xhr.open("POST", server_url+"/api/enter_room/", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
-    const room_id = "12345";
-    const nickname = "hong_gil_dong";
+    const room_id = $(".room_id").value;
+    const nickname = $(".nickname").value;
 
     const body = JSON.stringify({
         room_id: room_id,
@@ -107,7 +151,6 @@ $(".enter").on('click', function(){
             console.log(response_text)
             console.log(`url: ${response_text.ws_url}`);
             console.log(`dest: ${response_text.ws_destination}`);
-            // openSocket("ws://127.0.0.1:15674/ws", "/topic/12345");
             openSocket(response_text.ws_url, response_text.ws_destination);
             
         } else {
@@ -118,6 +161,50 @@ $(".enter").on('click', function(){
     xhr.send(body);
 
 });
+
+// Start Game
+$(".startGameBtn").on('click', function(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", server_url+"/api/v1/game_start", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    
+
+});
+
+// Send Keyword
+$(".submitKeywordBtn").on('click', function(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", server_url+"/api/collect_keyword/{단어}", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+});
+
+// Guess word
+$(".guessBtn").on('click', function(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", server_url+"/api/v1/check_similartiy/{단어}", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+});
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////// Test functions //////////////////////////////////////////////
+
 
 $(".out").on('click', function(){
     closeSocket();
