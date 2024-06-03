@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess with AI - Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Guess with AI</h1>
+        <p id="welcomeMessage"></p>
+        <!-- 게임 인터페이스 추가 -->
+    </div>
+    <script>
+        // URL 파라미터에서 닉네임 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const nickname = urlParams.get('nickname');
+        document.getElementById('welcomeMessage').innerText = `환영합니다, ${nickname}! 게임을 시작합니다.`;
+    </script>
+</body>
+</html>

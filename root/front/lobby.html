@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대기실</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>대기실</h1>
+        <div class="room-info">
+            <label for="roomCode">방 Code: </label>
+            <input type="text" id="roomCode" readonly>
+        </div>
+        <h2>참여자</h2>
+        <div class="participants">
+            <ul id="participantsList">
+                <!-- 참여자 목록이 여기에 추가됩니다 -->
+            </ul>
+        </div>
+    </div>
+    <script>
+        // URL 파라미터에서 닉네임 및 방 코드 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const nickname = urlParams.get('nickname');
+        const roomCode = urlParams.get('roomCode');
+
+        // 방 코드 표시
+        document.getElementById('roomCode').value = roomCode;
+
+        // 임시로 참여자 목록을 표시 (실제 데이터는 서버에서 받아와야 함)
+        const participants = [nickname, '참여자1', '참여자2'];
+        const participantsList = document.getElementById('participantsList');
+        participants.forEach(participant => {
+            const li = document.createElement('li');
+            li.textContent = participant;
+            participantsList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
+
+
+<!-- 하나의 로비 컴포넌트에서 첫 div(대기+시작)를 자체를 hide 하고 나서 새로운 div를 생성(생성형 이미지를 받아서 띄우고 테이블도 만들기)
+이걸 새로운 div를 생성함으로써  -->
