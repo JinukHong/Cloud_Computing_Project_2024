@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대기실</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>대기실</h1>
+        <div class="room-info">
+            <label for="roomCode">방 Code: </label>
+            <input type="text" id="roomCode" readonly>
+        </div>
+        <h2>참여자</h2>
+        <div class="participants">
+            <ul id="participantsList">
+                <!-- participants append here -->
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <h1>input keyword</h1>
+        <input type="text" id="keywordInput" placeholder="키워드">
+        <button id="submitKeywordBtn">입력</button>
+    </div>
+    <script type="module" src="./js/lobby.js"></script>
+</body>
+</html>
+
+
+<!-- 하나의 로비 컴포넌트에서 첫 div(대기+시작)를 자체를 hide 하고 나서 새로운 div를 생성(생성형 이미지를 받아서 띄우고 테이블도 만들기)
+이걸 새로운 div를 생성함으로써  -->

@@ -7,30 +7,7 @@ var ROOM_CODE;
 const SERVER_URL = "http://127.0.0.1:5000";
 const WS_URL = "127.0.0.1:15674"
 
-//////////////////////////////////////////// Stomp Listenter Functions //////////////////////////////////////////////
 
-function refreshMembers(){
-    // refresh participant list
-}
-
-function inputKeyword(){
-    // change component to input keyword
-}
-
-function startGame(image){
-    // show image
-    // change component to guess
-}
-
-function setOtherPlayerProgress(progresses){
-    // show&edit other player's progress
-}
-
-function showGameResult(result){
-    // show winner
-    // (optional) show player's keyword
-    // close socket
-}
 
 //////////////////////////////////////////// Stomp Connection //////////////////////////////////////////////
 
@@ -160,34 +137,6 @@ $(".enterRoomBtn").on('click', function(){
     xhr.send();
 
 });
-
-// Start Game
-$(".startGameBtn").on('click', function(){
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL+"/api/v1/game_start", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-    
-
-});
-
-// Send Keyword
-$(".submitKeywordBtn").on('click', function(){
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL+"/api/collect_keyword/{단어}", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-});
-
-// Guess word
-$(".guessBtn").on('click', function(){
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL+"/api/v1/check_similartiy/{단어}", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-});
-//
-
 
 
 
