@@ -26,7 +26,7 @@
 
     <!-- keyword 입력 후 submitKeywordBtn을 누르면
         fisrt-pahse이 none이되고 loading-pahse가 block -->
-    <div id="wordtoImage" style="display: block;" class="container">
+    <div id="wordtoImage" style="display: none;" class="container">
         <h1 style="text-align: center;">Input Keyword</h1>
         <h3 style="text-align: center;">Recommend range 2 to 4 noun or verb</h3>
         <input type="text" id="keywordInput" placeholder="키워드">
@@ -36,7 +36,7 @@
 
     <!-- image 로딩 후
         loading-phase이 none이되고 gameRoom가 block -->
-    <div id="loading-phase" style="display: block;" class="container">
+    <div id="loading-phase" style="display: none;" class="container">
         <div class="room-info">
             <div class="loader">
                 <div class="duo duo1">
@@ -56,13 +56,13 @@
     
     
     <!-- loading-phase이 none이되고 gameRoom가 block -->
-    <div id="gameRoom" style="display: block;" class="container">
+    <div id="gameRoom" style="display: none;" class="container">
         <div id="imageContainer">
             <img id="generatedImage" style="width: 100%; height: 100%;">
         </div>
         <div class="input-section">
             <input type="text" id="guessInput" placeholder="Guess the rest of the words in Image">
-            <button id="submitGuess">입력</button>
+            <button id="guessBtn">입력</button>
         </div>
         <div id="progress-status" class="container">
             <!-- <div>username1 : <span></span>/4</div> -->
@@ -81,7 +81,7 @@
     </div>
     
     <!-- gameRoom이 none이되고 gameFinish가 block -->
-    <div id="gameFinish" style="display: block;">
+    <div id="gameFinish" style="display: none;">
         <h1 style="text-align: center;">우승자 : <span></span></h1>
         <h2 style="text-align: center;">정답 공개</h2>
         

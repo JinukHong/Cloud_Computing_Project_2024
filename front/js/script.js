@@ -49,9 +49,9 @@ $("#joinRoomButton").on('click', function(){
 
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            const response_text = JSON.parse(xhr.responseText);
+            //const response_text = JSON.parse(xhr.responseText);
             
-            const roomCode = response_text.room_code;
+            // const roomCode = response_text.room_id;
             if (nickname) {
                 window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}`;
             }

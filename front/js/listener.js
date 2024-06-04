@@ -15,16 +15,17 @@ var myGuessCnt;
 
 
 export function refreshMembers(participants){
+    //[{"user_id": 134, "name": "kang"}, {"user_id": 135, "name": "b"}]
     // refresh participant list
     console.log('refreshMembers');
 
     const participantsList = document.getElementById('participantsList');
     participants.forEach(participant => {
         // need to add: if member out of game
-        if (!(roomParticipants.includes(participant))){
-            roomParticipants.push(participant);
+        if (!(roomParticipants.includes(participant.name))){
+            roomParticipants.push(participant.name);
             const li = document.createElement('li');
-            li.textContent = participant;
+            li.textContent = participant.name;
             participantsList.appendChild(li);
         }
         

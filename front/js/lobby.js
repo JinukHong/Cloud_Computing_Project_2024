@@ -83,7 +83,7 @@ $(document).ready(function () {
     openSocket(roomCode);
 
     // http request get participants once. or periodically send participants list MQ before start.
-    const participants = [nickname];
+    const participants = [{name: nickname}];
     Listener.refreshMembers(participants);
 
     // if host -> show game start button
