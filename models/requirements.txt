@@ -1,4 +1,6 @@
 flask 
 pillow 
 sentence-transformers
-torch
+googletrans==4.0.0-rc.1
+scikit-learn
+numpy
