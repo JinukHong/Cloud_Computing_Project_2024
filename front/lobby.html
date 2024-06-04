@@ -8,23 +8,105 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>대기실</h1>
-        <div class="room-info">
-            <label for="roomCode">방 Code: </label>
-            <input type="text" id="roomCode" readonly>
-        </div>
-        <h2>참여자</h2>
-        <div class="participants">
-            <ul id="participantsList">
-                <!-- participants append here -->
-            </ul>
-        </div>
+    <!-- 대기실 사람이 차고나서 startButton을 누르면 waitingRoom이 none이되고 fisrt-pahse가 block -->
+    <div id="waitingRoom" style="display: none;">
+    <h1>대기실</h1>
+    <div class="room-info">
+        <label for="roomCode">방 Code: </label>
+        <input type="text" id="roomCode" readonly>
     </div>
-    <div class="container">
-        <h1>input keyword</h1>
+    <h2>참여자</h2>
+    <div class="participants">
+        <ul id="participantsList">
+            <!-- participants append here -->
+        </ul>
+    </div>
+    <button id="startButton">게임 시작</button>
+    </div>
+
+    <!-- keyword 입력 후 submitKeywordBtn을 누르면
+        fisrt-pahse이 none이되고 loading-pahse가 block -->
+    <div id="first-phase" style="display: none;" class="container">
+        <h1 style="text-align: center;">Input Keyword</h1>
+        <h3 style="text-align: center;">Recommend range 2 to 4 noun or verb</h3>
         <input type="text" id="keywordInput" placeholder="키워드">
         <button id="submitKeywordBtn">입력</button>
+    </div>
+
+
+    <!-- image 로딩 후
+        loading-phase이 none이되고 gameRoom가 block -->
+    <div id="loading-phase" style="display: none;" class="container">
+        <div class="room-info">
+            <label for="roomCode">나의 키워드: </label>
+            <input type="text" id="roomCode" readonly>
+        </div>
+    </div>
+    
+    
+    <!-- loading-phase이 none이되고 gameRoom가 block -->
+    <div id="gameRoom" style="display: block;" class="container">
+        <div id="imageContainer">
+            <img id="generatedImage" style="width: 100%; height: 100%;">
+        </div>
+        <div class="input-section">
+            <input type="text" id="guessInput" placeholder="Guess the rest of the words in Image">
+            <button id="submitGuess">입력</button>
+        </div>
+        <div id="match-num" class="container">
+            <div>username1 : remain/4</div>
+            <div>username2 : remain/4</div>
+            <div>username3 : remain/4</div>
+        </div>
+        <div id="results">
+            <h2 style="text-align: center;">결과</h2>
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>??</th>
+                        <th>??</th>
+                        <th>??</th>
+                        <th>??</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>1</th>
+                        <th>?%</th>
+                        <th>?%</th>
+                        <th>?%</th>
+                        <th>?%</th>
+                    </tr>
+                    
+                    <!-- 결과가 여기에 추가됩니다 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- gameRoom이 none이되고 gameFinish가 block -->
+    <div id="gameFinish" style="display: none;">
+        <h1 style="text-align: center;">우승자 : nickname3</h1>
+        <h2 style="text-align: center;">정답 공개</h2>
+        
+        <table id="showAnswer">
+            <thead>
+                <tr>
+                    <th>keyward</th>
+                    <th>keyward</th>
+                    <th>keyward</th>
+                    <th>keyward</th>
+                </tr>
+                <tr>
+                    <th>nickname</th>
+                    <th>nickname</th>
+                    <th>nickname</th>
+                    <th>nickname</th>
+                </tr>
+            </thead>
+            
+        </table>
     </div>
     <script type="module" src="./js/lobby.js"></script>
 </body>
@@ -33,3 +115,4 @@
 
 <!-- 하나의 로비 컴포넌트에서 첫 div(대기+시작)를 자체를 hide 하고 나서 새로운 div를 생성(생성형 이미지를 받아서 띄우고 테이블도 만들기)
 이걸 새로운 div를 생성함으로써  -->
+

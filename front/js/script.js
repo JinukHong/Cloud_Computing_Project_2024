@@ -62,3 +62,17 @@ $("#joinRoomButton").on('click', function(){
     xhr.send();
 
 });
+
+
+// Start game
+$(document).ready(function() {
+    $('#startButton').click(function() {
+        $('#first-phase').css('display', 'block');
+        $('#waitingRoom').css('display', 'none');
+    });
+
+    $('#submitKeywordBtn').click(function() {
+        $('#first-phase').css('display', 'none');
+        $('#waitingRoom').css('display', 'block');
+    });
+});

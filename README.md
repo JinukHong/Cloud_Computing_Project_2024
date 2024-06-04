@@ -1,4 +1,4 @@
-# Cloud_Computing_Project_2024
+q# Cloud_Computing_Project_2024
 
 
 [A] 최종 보고서 및 결과물을 깃헙에 업로드.
@@ -8,6 +8,7 @@
 2.	최종 보고서를 깃헙 저장소(repository)의 최상위 디렉토리의 README.md 파일에 작성하세요. 보고서는 아래의 내용을, 아래의 순서대로 포함해야 합니다.
 
     A.	프로젝트 명
+        
 
     B.	프로젝트 멤버 이름 및 멤버 별 담당한 파트 소개
 
