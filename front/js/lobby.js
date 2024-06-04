@@ -99,7 +99,9 @@ $(document).ready(function () {
         //     },
         // });
 
-
+        // fetch(SERVER_URL+"/api/game_start", {method: 'get', credentials: 'include'})
+        // .then((response) => response.json())
+        // .then((data) => console.log(data))
 
 
         const xhr = new XMLHttpRequest();

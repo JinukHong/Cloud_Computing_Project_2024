@@ -45,6 +45,7 @@ export function inputKeyword(){ // finish
         if(myKeyword){
             const xhr = new XMLHttpRequest();
             xhr.open("GET", SERVER_URL+`/api/collect_keyword/${myKeyword}`, true);
+            xhr.withCredentials = true;
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     // const response_text = JSON.parse(xhr.responseText);
@@ -127,6 +128,7 @@ export function startGame(imageUrl, players){ // finish
 
         const xhr = new XMLHttpRequest();
         xhr.open("GET", SERVER_URL+`/api/check_similartiy/${myGuess}`, true);
+        xhr.withCredentials = true;
         xhr.onload = () => {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 // const response_text = JSON.parse(xhr.responseText);
