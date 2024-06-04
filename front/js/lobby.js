@@ -5,8 +5,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const nickname = urlParams.get('nickname');
 const roomCode = urlParams.get('roomCode');
 
-const SERVER_URL = "http://127.0.0.1:5000";
-const WS_URL = "127.0.0.1:15674"
+const SERVER_URL = "https://cc.pnu.app";
+const WS_URL = "w1.pcl.kr"
 var stomp_client; 
 var SUBSCRIPTION;
 
@@ -50,7 +50,7 @@ function onMessageReceived(payload) {
 
 
 function openSocket(destination) {
-    stomp_client = Stomp.client(`ws://${WS_URL}/ws`);
+    stomp_client = Stomp.client(`ws://${WS_URL}:15674/ws`);
 
     var connect_callback = function() {
         console.log('STOMP Socket connected');
@@ -90,8 +90,21 @@ $(document).ready(function () {
 
     // enable start game btn
     $("#startGameBtn").on('click', function(){
+        // $.ajax({
+        //     type: "GET",
+        //     url: SERVER_URL+"/api/game_start",
+        //     withCredentials: true,
+        //     success: function (response) {
+        //         console.log(`Game started.`);
+        //     },
+        // });
+
+
+
+
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", SERVER_URL+"/api/v1/game_start", true);
+        xhr.open("GET", SERVER_URL+"/api/game_start", true);
+        xhr.withCredentials = true;
         xhr.onload = () => {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 //const response_text = JSON.parse(xhr.responseText);

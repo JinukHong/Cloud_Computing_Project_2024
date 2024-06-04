@@ -1,4 +1,4 @@
-const SERVER_URL = "http://127.0.0.1:5000";
+const SERVER_URL = "https://cc.pnu.app";
 
 // Input nickname
 $("#submitButton").on('click', function(){
@@ -13,7 +13,8 @@ $("#createRoomButton").on('click', function(){
     const nickname = new URLSearchParams(window.location.search).get('nickname');
 
     const xhr = new XMLHttpRequest();    
-    xhr.open("GET", SERVER_URL+`/api/create_room?nickname=${nickname}`, true);
+    xhr.open("GET", SERVER_URL+`/api/create_room?name=${nickname}`, true);
+    xhr.withCredentials = true;
     // xhr.open("POST", SERVER_URL+"/api/create_room", true);
     // xhr.setRequestHeader("Content-Type", "application/json");
     // const body = JSON.stringify({name: nickname});
@@ -21,7 +22,7 @@ $("#createRoomButton").on('click', function(){
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const response_text = JSON.parse(xhr.responseText);
-            const roomCode = response_text.room_code;
+            const roomCode = response_text.room_id;
             if (nickname) {
                 window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}`;
             }
@@ -40,7 +41,8 @@ $("#joinRoomButton").on('click', function(){
 
     const xhr = new XMLHttpRequest();
 
-    xhr.open("GET", SERVER_URL+`/api/enter_room/${roomCode}?nickname=${nickname}`, true);
+    xhr.open("GET", SERVER_URL+`/api/enter_room/${roomCode}?name=${nickname}`, true);
+    xhr.withCredentials = true;
     // xhr.open("POST", SERVER_URL+"/api/enter_room/", true);
     // xhr.setRequestHeader("Content-Type", "application/json");
     // const body = JSON.stringify({room_id: room_id, name: nickname});

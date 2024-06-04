@@ -3,7 +3,7 @@ import {closeSocket} from './lobby.js'
 const urlParams = new URLSearchParams(window.location.search);
 const nickname = urlParams.get('nickname');
 
-const SERVER_URL = "http://127.0.0.1:5000";
+const SERVER_URL = "https://cc.pnu.app";
 
 const roomParticipants = [];
 
