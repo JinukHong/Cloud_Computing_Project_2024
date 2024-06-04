@@ -10,9 +10,10 @@ $("#submitButton").on('click', function(){
 
 // Create Room
 $("#createRoomButton").on('click', function(){
-    const xhr = new XMLHttpRequest();
-    
-    xhr.open("GET", SERVER_URL+"/api/create_room", true);
+    const nickname = new URLSearchParams(window.location.search).get('nickname');
+
+    const xhr = new XMLHttpRequest();    
+    xhr.open("GET", SERVER_URL+`/api/create_room?nickname=${nickname}`, true);
     // xhr.open("POST", SERVER_URL+"/api/create_room", true);
     // xhr.setRequestHeader("Content-Type", "application/json");
     // const body = JSON.stringify({name: nickname});
@@ -20,8 +21,6 @@ $("#createRoomButton").on('click', function(){
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const response_text = JSON.parse(xhr.responseText);
-
-            const nickname = new URLSearchParams(window.location.search).get('nickname');
             const roomCode = response_text.room_code;
             if (nickname) {
                 window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}`;
@@ -37,10 +36,11 @@ $("#createRoomButton").on('click', function(){
 // Enter room
 $("#joinRoomButton").on('click', function(){
     const roomCode = prompt("참여할 방 코드를 입력하세요:");
+    const nickname = new URLSearchParams(window.location.search).get('nickname');
 
     const xhr = new XMLHttpRequest();
 
-    xhr.open("GET", SERVER_URL+"/api/enter_room/"+roomCode, true);
+    xhr.open("GET", SERVER_URL+`/api/enter_room/${roomCode}?nickname=${nickname}`, true);
     // xhr.open("POST", SERVER_URL+"/api/enter_room/", true);
     // xhr.setRequestHeader("Content-Type", "application/json");
     // const body = JSON.stringify({room_id: room_id, name: nickname});
@@ -48,8 +48,7 @@ $("#joinRoomButton").on('click', function(){
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const response_text = JSON.parse(xhr.responseText);
-
-            const nickname = new URLSearchParams(window.location.search).get('nickname');
+            
             const roomCode = response_text.room_code;
             if (nickname) {
                 window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}`;

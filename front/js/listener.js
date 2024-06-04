@@ -7,7 +7,9 @@ const SERVER_URL = "http://127.0.0.1:5000";
 
 const roomParticipants = [];
 
+var myKeyword;
 var myGuess;
+var myGuessCnt;
 
 //////////////////////////////////////////// Stomp Listenter Functions //////////////////////////////////////////////
 
@@ -29,23 +31,28 @@ export function refreshMembers(participants){
     });
 }
 
-export function inputKeyword(){
+export function inputKeyword(){ // finish
     console.log('inputKeyword');
-    // show input keyword element
-    // show submit btn
+    
+    document.getElementById('startGameBtn').style.display = 'none';
+    document.getElementById('wordtoImage').style.display = 'block';
 
     // enable send Keyword btn 
     $("#submitKeywordBtn").on('click', function(){
         console.log('submit');
-        var myKeyword = $("#keywordInput").val();
+        myKeyword = $("#keywordInput").val();
         console.log(myKeyword);
         if(myKeyword){
             const xhr = new XMLHttpRequest();
             xhr.open("GET", SERVER_URL+`/api/collect_keyword/${myKeyword}`, true);
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    const response_text = JSON.parse(xhr.responseText);
-                    console.log(response_text);
+                    // const response_text = JSON.parse(xhr.responseText);
+                    // console.log(response_text);
+                    console.log(`Success: ${xhr.responseText}`);
+                                    
+                    document.getElementById('wordtoImage').style.display = 'none';
+                    document.getElementById('loading-phase').style.display = 'block';
                 } else {
                     console.log(`Error: ${xhr.responseText}`);
                 }
@@ -59,16 +66,59 @@ export function inputKeyword(){
 
 
 
-export function startGame(image){
+export function startGame(imageUrl, players){ // finish
     console.log('startGame');
+    
+    document.getElementById('watingRoom').style.display = 'none';
+    document.getElementById('loading-phase').style.display = 'none';
+    document.getElementById('gameRoom').style.display = 'block';
+
     // show image
-    //$("#image").
-    // show guess input/btn
-    // show guess table
+    const imageContainer = document.getElementById('imageContainer');
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    imageContainer.innerHTML = '';
+    imageContainer.appendChild(img);
+
     // show other player's progress
+    const progress_status = document.getElementById('progress-status');
+    // <div>username3 : <span></span>/4</div>
+    
+    roomParticipants.forEach((participant) => {
+        if(participant != nickname){
+            const div = document.createElement('div');
+            div.textContent = `${participant} : `;
+            const span = document.createElement('span');
+            span.textContent = 0;
+            div.appendChild(span);
+            progress_status.appendChild(div);
+        }
+    })
+
+    
+    // set guessTable along to players.
+    const guessTable = $('#resultTable > thead');
+    const tr = document.createElement('tr');
+    const th = document.createElement('th');
+    th.textContent = '#';
+    tr.appendChild(th);
+
+    roomParticipants.forEach((participant) => {
+        
+        const th = document.createElement('th');
+        if(participant != nickname){
+            th.textContent = '??';
+        }
+        else{
+            th.textContent = `${myKeyword}`;
+        }
+        tr.appendChild(th);
+        guessTable.appendChild(div);
+    });
 
 
-    // change component to guess
     console.log('startGame');
 
     // enable guess word btn
@@ -79,27 +129,9 @@ export function startGame(image){
         xhr.open("GET", SERVER_URL+`/api/check_similartiy/${myGuess}`, true);
         xhr.onload = () => {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                const response_text = JSON.parse(xhr.responseText);
-                console.log(response_text);
-                // response_test is array that contains (4) similarity percentage.
+                // const response_text = JSON.parse(xhr.responseText);
+                console.log(`Success: ${xhr.responseText}`);
                 
-                // const similarities = ;
-
-                const similaritiesList = $('#similaritiesList');
-                var tr = document.createElement('tr');
-                similarities.forEach((similarity, index) => {
-                    if(similarity == 100){
-                        // show what keyword is.
-                        $('#keywordList').children[index].text = myGuess;
-                    }
-                    // make new row
-                    const td = document.createElement('td');
-                    td.textContent = similarity;
-                    tr.appendChild(td);
-
-                });
-                // add row
-                similaritiesList.appendChild(tr);
             } else {
                 console.log(`Error: ${xhr.responseText}`);
             }
@@ -108,48 +140,71 @@ export function startGame(image){
     });
 }
 
-export function setOtherPlayerProgress(result){
+export function setPlayerProgress(result){ // show other player's progress
     // show&edit other player's progress
     console.log('setOtherPlayerProgress');
 
-    var player = progresses['name'];
-    if(player!=nickname){
-        progresses = progresses['progresses'];
+    if(result.askedBy == nickname){
+        const myGuessList = $('#resultTable > tbody');
+        var tr = document.createElement('tr');
+        const td = document.createElement('td');
+        myGuessCnt+=1;
+        td.textContent = myGuessCnt;
 
-        const playersList = $('#player');
-        progresses.forEach((progress, index) => {
-            if (playersList.children[index].val() < progress){
-                playersList.children[index].textContent = progress;
-            }   
+        result.similarities.forEach((similarity_info) => {
+            //var player = similarity_info[0];
+            var similarity = similarity_info[1];
+            if(similarity == 100){
+                // show what keyword is.
+                roomParticipants.forEach((participant, index) => {
+                    if(participant == nickname){
+                        $('#resultTable > thead > tr > th').children[index+1].text = myGuess;
+                    }
+                });
+                
+            }
+            // make new row
+            const td = document.createElement('td');
+            td.textContent = similarity;
+            tr.appendChild(td);
+
         });
+        // add row
+        myGuessList.appendChild(tr);
+    }
+    else{
+        // show other player's progress
+
+        // var askedPlayer = result.askedBy;
+        // progress_statusdocument.getElementById('progress-status');
     }
 }
 
 
-export function showGameResult(result){
+export function showGameResult(result){ // finish
     console.log('showGameResult');
     // find/set winner element
-    $("#winner").textContent = result.winner;
+    $("#gameFinish > h1 > span").textContent = result.winner;
 
     // (optional) show player's keyword
-    const keywordFromWho = $('#keywordFromWho');
-    var tr = document.createElement('tr');
-    result.keywordfrom.names.forEach(name => {
-        // make new row
-        const td = document.createElement('th');
-        td.textContent = name;
-        tr.appendChild(td);
+    const keywordsList = result.keywords;
+
+    const keywordsTable = $('#keywordsTable');
+
+    keywordsList.forEach((keyword_info) => {
+        const tr_head = document.createElement('tr');
+        const tr_body = document.createElement('tr');
+
+        const th = document.createElement('th');
+        const tr = document.createElement('tr');
+        th.textContent = keyword_info[0];
+        tr.textContent = keyword_info[1];
+
+        tr_head.appendChild(th);
+        tr_body.appendChild(tr);
     });
-    // add row
-    keywordFromWho.appendChild(tr);
-    var tr = document.createElement('tr');
-    result.keywordfrom.keywords.forEach(keyword => {
-        // make new row
-        const td = document.createElement('td');
-        td.textContent = keyword;
-        tr.appendChild(td);
-    });
-    keywordFromWho.appendChild(tr);
+    keywordsTable.appendChild(tr_head);
+    keywordsTable.appendChild(tr_body);
 
     // close socket
     closeSocket();

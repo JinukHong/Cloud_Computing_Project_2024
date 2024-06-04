@@ -30,12 +30,13 @@ function onMessageReceived(payload) {
             Listener.inputKeyword();
             break
         case 'start_game':
-            var image = body['image'];
-            Listener.startGame(image);
+            var imageUrl = body['image_url'];
+            var players = body['players'];
+            Listener.startGame(imageUrl, players);
             break
         case 'result_similarity':
             var result = body['result'];
-            Listener.setOtherPlayerProgress(result);
+            Listener.setPlayerProgress(result);
             break
         case 'end_game':
             var result = body['result'];

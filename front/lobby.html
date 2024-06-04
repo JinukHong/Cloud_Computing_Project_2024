@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- 대기실 사람이 차고나서 startButton을 누르면 waitingRoom이 none이되고 fisrt-pahse가 block -->
-    <div id="waitingRoom" style="display: none;">
+    <div id="waitingRoom" style="display: block;">
     <h1>대기실</h1>
     <div class="room-info">
         <label for="roomCode">방 Code: </label>
@@ -26,7 +26,7 @@
 
     <!-- keyword 입력 후 submitKeywordBtn을 누르면
         fisrt-pahse이 none이되고 loading-pahse가 block -->
-    <div id="first-phase" style="display: none;" class="container">
+    <div id="wordtoImage" style="display: block;" class="container">
         <h1 style="text-align: center;">Input Keyword</h1>
         <h3 style="text-align: center;">Recommend range 2 to 4 noun or verb</h3>
         <input type="text" id="keywordInput" placeholder="키워드">
@@ -36,7 +36,7 @@
 
     <!-- image 로딩 후
         loading-phase이 none이되고 gameRoom가 block -->
-    <div id="loading-phase" style="display: none;" class="container">
+    <div id="loading-phase" style="display: block;" class="container">
         <div class="room-info">
             <label for="roomCode">나의 키워드: </label>
             <input type="text" id="roomCode" readonly>
@@ -53,32 +53,16 @@
             <input type="text" id="guessInput" placeholder="Guess the rest of the words in Image">
             <button id="submitGuess">입력</button>
         </div>
-        <div id="match-num" class="container">
-            <div>username1 : remain/4</div>
-            <div>username2 : remain/4</div>
-            <div>username3 : remain/4</div>
+        <div id="progress-status" class="container">
+            <!-- <div>username1 : <span></span>/4</div> -->
         </div>
         <div id="results">
             <h2 style="text-align: center;">결과</h2>
             <table id="resultsTable">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>??</th>
-                        <th>??</th>
-                        <th>??</th>
-                        <th>??</th>
-                    </tr>
+                    
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>1</th>
-                        <th>?%</th>
-                        <th>?%</th>
-                        <th>?%</th>
-                        <th>?%</th>
-                    </tr>
-                    
                     <!-- 결과가 여기에 추가됩니다 -->
                 </tbody>
             </table>
@@ -86,25 +70,11 @@
     </div>
     
     <!-- gameRoom이 none이되고 gameFinish가 block -->
-    <div id="gameFinish" style="display: none;">
-        <h1 style="text-align: center;">우승자 : nickname3</h1>
+    <div id="gameFinish" style="display: block;">
+        <h1 style="text-align: center;">우승자 : <span></span></h1>
         <h2 style="text-align: center;">정답 공개</h2>
         
-        <table id="showAnswer">
-            <thead>
-                <tr>
-                    <th>keyward</th>
-                    <th>keyward</th>
-                    <th>keyward</th>
-                    <th>keyward</th>
-                </tr>
-                <tr>
-                    <th>nickname</th>
-                    <th>nickname</th>
-                    <th>nickname</th>
-                    <th>nickname</th>
-                </tr>
-            </thead>
+        <table id="keywordsTable">
             
         </table>
     </div>
