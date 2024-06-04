@@ -71,7 +71,7 @@ export function inputKeyword(){ // finish
 export function startGame(imageUrl, players){ // finish
     console.log('startGame');
     
-    document.getElementById('watingRoom').style.display = 'none';
+    document.getElementById('waitingRoom').style.display = 'none';
     document.getElementById('loading-phase').style.display = 'none';
     document.getElementById('gameRoom').style.display = 'block';
 
@@ -94,6 +94,7 @@ export function startGame(imageUrl, players){ // finish
             div.textContent = `${participant} : `;
             const span = document.createElement('span');
             span.textContent = 0;
+            div.className = 'player_progress';
             div.appendChild(span);
             progress_status.appendChild(div);
         }
@@ -101,7 +102,7 @@ export function startGame(imageUrl, players){ // finish
 
     
     // set guessTable along to players.
-    const guessTable = $('#resultTable > thead');
+    const guessTable = document.getElementById('result-head');
     const tr = document.createElement('tr');
     const th = document.createElement('th');
     th.textContent = '#';
@@ -117,8 +118,8 @@ export function startGame(imageUrl, players){ // finish
             th.textContent = `${myKeyword}`;
         }
         tr.appendChild(th);
-        guessTable.appendChild(div);
     });
+    guessTable.appendChild(tr);
 
 
     console.log('startGame');
@@ -148,7 +149,8 @@ export function setPlayerProgress(result){ // show other player's progress
     console.log('setOtherPlayerProgress');
 
     if(result.askedBy == nickname){
-        const myGuessList = $('#resultTable > tbody');
+        
+        const myGuessList = document.getElementById('result-body');
         var tr = document.createElement('tr');
         const td = document.createElement('td');
         myGuessCnt+=1;
@@ -187,12 +189,12 @@ export function setPlayerProgress(result){ // show other player's progress
 export function showGameResult(result){ // finish
     console.log('showGameResult');
     // find/set winner element
-    $("#gameFinish > h1 > span").textContent = result.winner;
+    $("#gameFinish > h1 > span").text(`${result.winner}`);;
 
     // (optional) show player's keyword
     const keywordsList = result.keywords;
 
-    const keywordsTable = $('#keywordsTable');
+    const keywordsTable = document.getElementById('keywordsTable-body');
 
     keywordsList.forEach((keyword_info) => {
         const tr_head = document.createElement('tr');

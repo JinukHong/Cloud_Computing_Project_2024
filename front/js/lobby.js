@@ -31,7 +31,7 @@ function onMessageReceived(payload) {
             break
         case 'start_game':
             var imageUrl = body['image_url'];
-            var players = body['players'];
+            var players = body['members'];
             Listener.startGame(imageUrl, players);
             break
         case 'result_similarity':
