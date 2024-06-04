@@ -129,7 +129,7 @@ export function startGame(imageUrl, players){ // finish
         myGuess = $("#guessInput").val();
 
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", SERVER_URL+`/api/check_similartiy/${myGuess}`, true);
+        xhr.open("GET", SERVER_URL+`/api/check_similarity/${myGuess}`, true);
         xhr.withCredentials = true;
         xhr.onload = () => {
             if (xhr.readyState == 4 && xhr.status == 200) {
@@ -146,9 +146,9 @@ export function startGame(imageUrl, players){ // finish
 
 export function setPlayerProgress(result){ // show other player's progress
     // show&edit other player's progress
+    // "result": {"askedBy": {"user_id": 234, "nickname": "kang"}, "similarities": {"kang": 25.72900950908661, "a": 41.03550314903259}}}
     console.log('setOtherPlayerProgress');
-
-    if(result.askedBy == nickname){
+    if(result.askedBy.nickname == nickname){
         
         const myGuessList = document.getElementById('result-body');
         var tr = document.createElement('tr');
@@ -163,6 +163,7 @@ export function setPlayerProgress(result){ // show other player's progress
                 // show what keyword is.
                 roomParticipants.forEach((participant, index) => {
                     if(participant == nickname){
+                        // need to modify 
                         $('#resultTable > thead > tr > th').children[index+1].text = myGuess;
                     }
                 });
