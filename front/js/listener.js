@@ -3,18 +3,19 @@ import {closeSocket} from './lobby.js'
 const urlParams = new URLSearchParams(window.location.search);
 const nickname = urlParams.get('nickname');
 
-const SERVER_URL = "https://cc.pnu.app";
+const SERVER_URL = "https://cca.pnu.app";
 
 const roomParticipants = [];
+var participantsScore = [];
 
 var myKeyword;
 var myGuess;
-var myGuessCnt;
+var myGuessCnt = 0;
 
 //////////////////////////////////////////// Stomp Listenter Functions //////////////////////////////////////////////
 
 
-export function refreshMembers(participants){
+export function refreshMembers(participants){ // finish
     //[{"user_id": 134, "name": "kang"}, {"user_id": 135, "name": "b"}]
     // refresh participant list
     console.log('refreshMembers');
@@ -23,10 +24,12 @@ export function refreshMembers(participants){
     participants.forEach(participant => {
         // need to add: if member out of game
         if (!(roomParticipants.includes(participant.name))){
-            roomParticipants.push(participant.name);
             const li = document.createElement('li');
             li.textContent = participant.name;
             participantsList.appendChild(li);
+
+            roomParticipants.push(participant.name);
+            participantsScore.push(0);
         }
         
     });
@@ -52,9 +55,10 @@ export function inputKeyword(){ // finish
                     // const response_text = JSON.parse(xhr.responseText);
                     // console.log(response_text);
                     console.log(`Success: ${xhr.responseText}`);
-                                    
+
                     document.getElementById('wordtoImage').style.display = 'none';
                     document.getElementById('loading-phase').style.display = 'block';
+                    $("#myKeyword").val(myKeyword);
                 } else {
                     console.log(`Error: ${xhr.responseText}`);
                 }
@@ -84,6 +88,14 @@ export function startGame(imageUrl, players){ // finish
     imageContainer.innerHTML = '';
     imageContainer.appendChild(img);
 
+    const imageContainer2 = document.getElementById('imageContainerWinner');
+    const img2 = document.createElement('img');
+    img2.src = imageUrl;
+    img2.style.width = '100%';
+    img2.style.height = '100%';
+    imageContainer2.innerHTML = '';
+    imageContainer2.appendChild(img2);
+
     // show other player's progress
     const progress_status = document.getElementById('progress-status');
     // <div>username3 : <span></span>/4</div>
@@ -94,7 +106,8 @@ export function startGame(imageUrl, players){ // finish
             div.textContent = `${participant} : `;
             const span = document.createElement('span');
             span.textContent = 0;
-            div.className = 'player_progress';
+            div.className = 'player-progress';
+            div.id = `${participant}-progress`;
             div.appendChild(span);
             progress_status.appendChild(div);
         }
@@ -144,58 +157,67 @@ export function startGame(imageUrl, players){ // finish
     });
 }
 
-export function setPlayerProgress(result){ // show other player's progress
+export function setPlayerProgress(result){ // finish
     // show&edit other player's progress
-    // "result": {"askedBy": {"user_id": 234, "nickname": "kang"}, "similarities": {"kang": 25.72900950908661, "a": 41.03550314903259}}}
+    // "result": {"askedBy": {"user_id": 425, "nickname": "kkang"}, "similarities": {"kkang": 38.48070502281189, "fong": 24.111109972000122}}}
     console.log('setOtherPlayerProgress');
     if(result.askedBy.nickname == nickname){
         
         const myGuessList = document.getElementById('result-body');
         var tr = document.createElement('tr');
         const td = document.createElement('td');
-        myGuessCnt+=1;
-        td.textContent = myGuessCnt;
+        td.textContent = myGuess;
+        tr.appendChild(td);
 
-        result.similarities.forEach((similarity_info) => {
-            //var player = similarity_info[0];
-            var similarity = similarity_info[1];
-            if(similarity == 100){
-                // show what keyword is.
-                roomParticipants.forEach((participant, index) => {
-                    if(participant == nickname){
-                        // need to modify 
-                        $('#resultTable > thead > tr > th').children[index+1].text = myGuess;
-                    }
-                });
-                
+        roomParticipants.forEach((participant, index) => {
+            const similarity = result.similarities[participant];
+            console.log(similarity)
+            if(Math.abs(similarity - 100) < 0.001){
+                $(`#result-head > tr > th:eq(${index + 1})`).text(myGuess);
             }
-            // make new row
+                
             const td = document.createElement('td');
-            td.textContent = similarity;
+            td.textContent = Math.round(similarity*100)/100;
             tr.appendChild(td);
-
+            
         });
+            
         // add row
         myGuessList.appendChild(tr);
     }
     else{
         // show other player's progress
 
-        // var askedPlayer = result.askedBy;
-        // progress_statusdocument.getElementById('progress-status');
+        const askedPlayer = result.askedBy.nickname;
+        const idx = roomParticipants.indexOf(askedPlayer);
+
+        roomParticipants.forEach((participant) => {
+            const similarity = result.similarities[participant];
+            console.log(similarity);
+            if(Math.abs(similarity - 100) < 0.001){
+                participantsScore[idx]+=1;
+                console.log(`other player score up: ${askedPlayer} ${participantsScore[idx]}`);
+                $(`#${askedPlayer}-progress > span`).text(participantsScore[idx]);
+            }
+        });
+
     }
 }
 
 
-export function showGameResult(result){ // finish
+export function showGameResult(result){ 
     console.log('showGameResult');
+    
+    document.getElementById('gameRoom').style.display = 'none';
+    document.getElementById('gameFinish').style.display = 'block';
+
     // find/set winner element
-    $("#gameFinish > h1 > span").text(`${result.winner}`);;
+    $(".winner span").text(`${result.winner}`);
 
     // (optional) show player's keyword
     const keywordsList = result.keywords;
 
-    const keywordsTable = document.getElementById('keywordsTable-body');
+    const keywordsTable = document.getElementById('keywordsTable');
 
     keywordsList.forEach((keyword_info) => {
         const tr_head = document.createElement('tr');

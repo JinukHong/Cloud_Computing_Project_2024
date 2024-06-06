@@ -5,8 +5,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const nickname = urlParams.get('nickname');
 const roomCode = urlParams.get('roomCode');
 
-const SERVER_URL = "https://cc.pnu.app";
-const WS_URL = "w1.pcl.kr"
+const SERVER_URL = "https://cca.pnu.app";
+const WS_URL = "ccs.pnu.app"
 var stomp_client; 
 var SUBSCRIPTION;
 
@@ -50,7 +50,7 @@ function onMessageReceived(payload) {
 
 
 function openSocket(destination) {
-    stomp_client = Stomp.client(`ws://${WS_URL}:15674/ws`);
+    stomp_client = Stomp.client(`ws://${WS_URL}/ws`);
 
     var connect_callback = function() {
         console.log('STOMP Socket connected');
@@ -82,11 +82,30 @@ $(document).ready(function () {
     document.getElementById('roomCode').value = roomCode;
     openSocket(roomCode);
 
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", SERVER_URL+"/api/info", true);
+    xhr.withCredentials = true;
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const response_text = JSON.parse(xhr.responseText);
+            const participants = response_text.room_users;;
+            Listener.refreshMembers(participants);
+            console.log(`Game started.`);
+
+        } else {
+            console.log(`Error: ${xhr.responseText}`);
+        }
+    };
+    xhr.send();
+    
+
     // http request get participants once. or periodically send participants list MQ before start.
-    const participants = [{name: nickname}];
-    Listener.refreshMembers(participants);
+    
 
     // if host -> show game start button
+    if(urlParams.get('host') == nickname){
+        document.getElementById('startGameBtn').style.display = 'block';
+    }
 
     // enable start game btn
     $("#startGameBtn").on('click', function(){

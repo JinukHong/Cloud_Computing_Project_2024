@@ -21,14 +21,14 @@
             <!-- participants append here -->
         </ul>
     </div>
-    <button id="startGameBtn">게임 시작</button>
+    <button id="startGameBtn" style="display: none;">게임 시작</button>
     </div>
 
     <!-- keyword 입력 후 submitKeywordBtn을 누르면
         fisrt-pahse이 none이되고 loading-pahse가 block -->
     <div id="wordtoImage" style="display: none;" class="container">
-        <h1 style="text-align: center;">Input Keyword</h1>
-        <h3 style="text-align: center;">Recommend range 2 to 4 noun or verb</h3>
+        <h1 style="text-align: center;">키워드를 입력하세요</h1>
+        <h5 style="text-align: center;">2~4글자 사이의 명사를 추천합니다!</h3>
         <input type="text" id="keywordInput" placeholder="키워드">
         <button id="submitKeywordBtn">입력</button>
     </div>
@@ -36,7 +36,7 @@
 
     <!-- image 로딩 후
         loading-phase이 none이되고 gameRoom가 block -->
-    <div id="loading-phase" style="display: none;" class="container">
+    <div id="loading-phase" style="display: none; margin-top: 40px;" class="container">
         <div class="room-info">
             <div class="loader">
                 <div class="duo duo1">
@@ -49,8 +49,9 @@
                 </div>
               </div>
               <div><br><br><br><br></div>
-            <label for="roomCode">나의 키워드: </label>
-            <input type="text" id="roomCode" readonly>
+            <h5 style="text-align: center;">다른사람을 기다리는중...</h3>
+            <label for="myKeyword">나의 키워드: </label>
+            <input type="text" id="myKeyword" readonly>
         </div>
     </div>
     
@@ -69,20 +70,26 @@
         </div>
         <div id="results">
             <h2 style="text-align: center;">결과</h2>
-            <table id="resultsTable">
-                <thead id="result-head">
-                    
-                </thead>
-                <tbody id="result-body">
-                    <!-- 결과가 여기에 추가됩니다 -->
-                </tbody>
-            </table>
+            <div class="tableContainer">
+                <table id="resultsTable">
+                    <thead id="result-head">
+                        
+                    </thead>
+                    <tbody id="result-body">
+                        <!-- 결과가 여기에 추가됩니다 -->
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
     </div>
     
     <!-- gameRoom이 none이되고 gameFinish가 block -->
     <div id="gameFinish" style="display: none;">
-        <h1 style="text-align: center;">우승자 : <span></span></h1>
+        <div id="imageContainerWinner">
+            <img id="generatedImage2" style="width: 100%; height: 100%;">
+        </div>
+        <h1 class='winner' style="text-align: center;">우승자 : <span></span></h1>
         <h2 style="text-align: center;">정답 공개</h2>
         
         <table id="keywordsTable">

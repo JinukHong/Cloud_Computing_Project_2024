@@ -1,4 +1,4 @@
-const SERVER_URL = "https://cc.pnu.app";
+const SERVER_URL = "https://cca.pnu.app";
 
 // Input nickname
 $("#submitButton").on('click', function(){
@@ -24,7 +24,7 @@ $("#createRoomButton").on('click', function(){
             const response_text = JSON.parse(xhr.responseText);
             const roomCode = response_text.room_id;
             if (nickname) {
-                window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}`;
+                window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}&host=${encodeURIComponent(nickname)}`;
             }
         } else {
             console.log(`Error: ${xhr.responseText}`);
