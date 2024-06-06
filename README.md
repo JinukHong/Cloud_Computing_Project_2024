@@ -111,7 +111,7 @@ D. 프로젝트 필요성 소개
   
   F.	프로젝트 개발 결과물 소개 (+ 다이어그램)
     
-![alt text](src/images/image.png)
+![다이어그램](https://github.com/JinukHong/cloud_model_part/assets/45095330/e5312653-aee9-4a11-912f-46ab18032e30)
 
   G.	개발 결과물을 사용하는 방법 소개 (설치 방법, 동작 방법 등)
   - [Guess With AI](https://cc.pnu.app) (https://cc.pnu.app) 해당 링크에 접속해서 자유롭게 플레이할 수 있다.
