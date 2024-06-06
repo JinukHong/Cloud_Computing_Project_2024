@@ -111,10 +111,10 @@ D. 프로젝트 필요성 소개
   
   F.	프로젝트 개발 결과물 소개 (+ 다이어그램)
     
-![alt text](images/image.png)
+![alt text](src/images/image.png)
 
   G.	개발 결과물을 사용하는 방법 소개 (설치 방법, 동작 방법 등)
-  - [Guess With AI](https://cc.pnu.app) (https://cc.pnu.app) 해당 링크에 접속해서 자유롭게 플레이하면 된다.
+  - [Guess With AI](https://cc.pnu.app) (https://cc.pnu.app) 해당 링크에 접속해서 자유롭게 플레이할 수 있다.
 
   H.	개발 결과물의 활용방안 소개
 
