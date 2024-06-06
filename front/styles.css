@@ -63,11 +63,13 @@ button:hover {
   width: 100%;
   height: 200px;
   overflow-y: auto; /* 세로 스크롤 활성화 */
+  
+  border: 1px solid #ffffff;
 }
 
 #resultsTable {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 
@@ -79,23 +81,19 @@ button:hover {
   z-index: 1; /* thead를 tbody 위로 올리기 위해 필요 */
 }
 
-#resultsTable tbody {
-  height: 160px; /* 원하는 높이로 설정 */
-  overflow-y: auto;
-}
-
-#resultsTable tbody tr {
-  width: 100%;
-  table-layout: fixed;
-}
-
 #resultsTable th, #resultsTable td {
     border: 1px solid #ffffff;
     padding: 10px;
+    margin: 0px;
     text-align: center;
 }
+
+#resultsTable th {
+  
+}
+
 #resultsTable th:first-child, #resultsTable td:first-child {
-    width: 40%;
+    width: 30%;
 }
 
 #showAnswer {

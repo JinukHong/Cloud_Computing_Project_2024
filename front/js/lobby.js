@@ -50,7 +50,7 @@ function onMessageReceived(payload) {
 
 
 function openSocket(destination) {
-    stomp_client = Stomp.client(`ws://${WS_URL}/ws`);
+    stomp_client = Stomp.client(`wss://${WS_URL}/ws`);
 
     var connect_callback = function() {
         console.log('STOMP Socket connected');
