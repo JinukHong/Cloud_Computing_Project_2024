@@ -238,5 +238,11 @@ export function showGameResult(result){
 
     // close socket
     closeSocket();
+
+
+    // Enter room
+    $("#returnButton").on('click', function(){
+        window.location.href = `create_room.html?nickname=${encodeURIComponent(nickname)}`;
+    });
     
 }
