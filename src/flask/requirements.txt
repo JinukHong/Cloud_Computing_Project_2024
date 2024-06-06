@@ -1,0 +1,10 @@
+Flask
+Flask-Session
+psycopg2-binary
+pillow
+scikit-learn
+numpy   
+googletrans==4.0.0-rc.1
+pytest
+stomp-py
+Flask-Cors

@@ -1,6 +1,0 @@
-flask 
-pillow 
-sentence-transformers
-googletrans==4.0.0-rc.1
-scikit-learn
-numpy
