@@ -88,20 +88,16 @@ button:hover {
     text-align: center;
 }
 
-#resultsTable th {
-  
-}
-
 #resultsTable th:first-child, #resultsTable td:first-child {
     width: 30%;
 }
 
-#showAnswer {
+#keywordsTable {
     width: 100%;
     border-collapse: collapse;
 }
 
-#showAnswer th, #showAnswer td {
+#keywordsTable th, #keywordsTable td {
     border: 1px solid #ffffff;
     padding: 10px;
     text-align: center;

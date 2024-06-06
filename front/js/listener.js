@@ -10,7 +10,6 @@ var participantsScore = [];
 
 var myKeyword;
 var myGuess;
-var myGuessCnt = 0;
 
 //////////////////////////////////////////// Stomp Listenter Functions //////////////////////////////////////////////
 
@@ -194,7 +193,7 @@ export function setPlayerProgress(result){ // finish
         roomParticipants.forEach((participant) => {
             const similarity = result.similarities[participant];
             console.log(similarity);
-            if(Math.abs(similarity - 100) < 0.001){
+            if(Math.abs(similarity - 100) < 0.01){
                 participantsScore[idx]+=1;
                 console.log(`other player score up: ${askedPlayer} ${participantsScore[idx]}`);
                 $(`#${askedPlayer}-progress > span`).text(participantsScore[idx]);
@@ -206,33 +205,36 @@ export function setPlayerProgress(result){ // finish
 
 
 export function showGameResult(result){ 
+    // {"type": "end_game", "result": {"winner": {"user_id": 508, "nickname": ["jukdang", "test-member"]}, "keywords": [[508, "jukdang", "\uacc4\ub780\ub9d0\uc774"], [509, "test-member", "\ub2ec"]]}}
     console.log('showGameResult');
     
     document.getElementById('gameRoom').style.display = 'none';
     document.getElementById('gameFinish').style.display = 'block';
 
     // find/set winner element
-    $(".winner span").text(`${result.winner}`);
+    $(".winner span").text(`${result.winner.nickname}`);
 
     // (optional) show player's keyword
-    const keywordsList = result.keywords;
+    const keywords= result.keywords;
 
-    const keywordsTable = document.getElementById('keywordsTable');
+    const thead = document.getElementById('keywordsTable-thead');
+    const tbody = document.getElementById('keywordsTable-tbody');
 
-    keywordsList.forEach((keyword_info) => {
-        const tr_head = document.createElement('tr');
-        const tr_body = document.createElement('tr');
+    const tr_head = document.createElement('tr');
+    const tr_body = document.createElement('tr');
+
+    roomParticipants.forEach((participant) => {
 
         const th = document.createElement('th');
-        const tr = document.createElement('tr');
-        th.textContent = keyword_info[0];
-        tr.textContent = keyword_info[1];
+        const td = document.createElement('td');
+        th.textContent = participant;
+        td.textContent = keywords[participant];
 
         tr_head.appendChild(th);
-        tr_body.appendChild(tr);
+        tr_body.appendChild(td);
     });
-    keywordsTable.appendChild(tr_head);
-    keywordsTable.appendChild(tr_body);
+    thead.appendChild(tr_head);
+    tbody.appendChild(tr_body);
 
     // close socket
     closeSocket();
