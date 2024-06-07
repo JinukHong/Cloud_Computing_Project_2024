@@ -28,6 +28,9 @@ $("#createRoomButton").on('click', function(){
             }
         } else {
             console.log(`Error: ${xhr.responseText}`);
+
+            var restxt = JSON.parse(xhr.responseText);
+            alert(`${restxt.message}`);
         }
     };
     xhr.send();
@@ -55,8 +58,20 @@ $("#joinRoomButton").on('click', function(){
             if (nickname) {
                 window.location.href = `lobby.html?nickname=${encodeURIComponent(nickname)}&roomCode=${encodeURIComponent(roomCode)}`;
             }
+        } else if (xhr.status == 409) {
+            console.log(`Error: ${xhr.responseText}`);
+
+            var restxt = JSON.parse(xhr.responseText);
+            alert(`${restxt.message}`);
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 500);
+            
         } else {
             console.log(`Error: ${xhr.responseText}`);
+
+            var restxt = JSON.parse(xhr.responseText);
+            alert(`${restxt.message}`);
         }
     };
 

@@ -9,6 +9,7 @@ const SERVER_URL = "https://cca.pnu.app";
 const WS_URL = "ccs.pnu.app"
 var stomp_client; 
 var SUBSCRIPTION;
+var session_interval;
 
 
 //////////////////////////////////////////// Stomp Connection //////////////////////////////////////////////
@@ -97,6 +98,34 @@ $(document).ready(function () {
         }
     };
     xhr.send();
+
+
+    session_interval = setInterval(() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", SERVER_URL+"/api/session", true);
+        xhr.withCredentials = true;
+        xhr.onload = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                const restxt = JSON.parse(xhr.responseText);
+                if (roomCode != restxt.room_id || nickname != restxt.nickname) {
+                    clearInterval(session_interval);
+                    alert("세션이 만료되었습니다.\n\n동일 브라우저로 여러개의 탭을 사용하여 동시에 플레이 하면 기존 세션이 만료될 수 있습니다");
+                    setTimeout(() => {
+                        window.location.href = `create_room.html?nickname=${encodeURIComponent(nickname)}`;
+                    }, 500);
+                }
+    
+            } else if (xhr.status == 403){
+                clearInterval(session_interval);
+                alert("세션이 만료되었습니다.\n\n동일 브라우저로 여러개의 탭을 사용하여 동시에 플레이 하면 기존 세션이 만료될 수 있습니다");
+                setTimeout(() => {
+                    window.location.href = `create_room.html?nickname=${encodeURIComponent(nickname)}`;
+                }, 500);
+            } else {
+            }
+        };
+        xhr.send();
+    }, 1000);
     
 
     // http request get participants once. or periodically send participants list MQ before start.
@@ -122,6 +151,12 @@ $(document).ready(function () {
         // .then((response) => response.json())
         // .then((data) => console.log(data))
 
+        if (Listener.getParticipantsCount() == 1) {
+            alert("본 게임의 참가자는 최소 2명에서 최대 4명입니다.\n\n \
+현재 기능 시현을 위해 1인 시작도 가능하나\n \
+맞춰야할 키워드가 없기에 아무 단어나 입력해도\n \
+즉시 승리처리되고 게임이 종료됩니다.");
+        }
 
         const xhr = new XMLHttpRequest();
         xhr.open("GET", SERVER_URL+"/api/game_start", true);
@@ -133,6 +168,9 @@ $(document).ready(function () {
 
             } else {
                 console.log(`Error: ${xhr.responseText}`);
+                
+                var restxt = JSON.parse(xhr.responseText);
+                alert(`${restxt.message}`);
             }
         };
         xhr.send();

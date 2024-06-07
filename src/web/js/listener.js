@@ -246,3 +246,7 @@ export function showGameResult(result){
     });
     
 }
+
+export function getParticipantsCount() {
+    return roomParticipants.length;
+}

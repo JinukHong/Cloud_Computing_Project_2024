@@ -86,6 +86,18 @@ def my_info():
             return jsonify({"message": "User not found"}), 404
     else:
         return jsonify({"message": "User not logged in"}), 403
+    
+
+@app.route('/api/session', methods=['GET'])
+def my_room():
+    room_id = session.get('room_id')
+    user_id = session.get('user_id')
+    nickname = session.get('nickname')
+
+    if room_id is None or user_id is None:
+        return jsonify({"message": "Invalid session or not logged in"}), 403
+    
+    return jsonify({"room_id": room_id, "user_id": user_id, "nickname": nickname}), 200
 
 
 @app.route('/api/create_room', methods=['GET'])
@@ -111,6 +123,17 @@ def enter_room(room_code):
 
     room_info = execute_query('SELECT id, status, (SELECT COUNT(*) FROM "user" WHERE room = %s) as current_users FROM room WHERE id = %s', (room_code, room_code), fetchone=True)
     if room_info and room_info[1] == '준비' and room_info[2] < 4:
+        existing_nickname = execute_query('SELECT id FROM "user" WHERE room = %s AND name = %s', (room_code, nickname), fetchone=True)
+        if existing_nickname:
+            return jsonify({"message": "이 방에 동일한 닉네임을 가진 플레이어가 존재합니다.\n닉네임을 변경하고 입장해주세요!"}), 409
+
+        
+        room_id = session.get('room_id')
+        user_id = session.get('user_id')
+        nickname = session.get('nickname')
+        if room_id is not None and str(room_id) == str(room_code):
+            return jsonify({"message": f"이미 이 방에 {nickname}으로 접속중입니다. 다른 기기나 브라우저로 접속해주세요!"}), 409
+
         user_id = execute_query('INSERT INTO "user" (name, room) VALUES (%s, %s) RETURNING id', (nickname, room_code), fetchone=True, commit=True)[0]
         session['user_id'] = user_id
         session['room_id'] = room_code
@@ -129,11 +152,11 @@ def enter_room(room_code):
 
         return jsonify({"room_id": room_code, "user_id": user_id, "nickname": nickname}), 200
     elif room_info and room_info[2] >= 4:
-        return jsonify({"message": "Room is full"}), 403
+        return jsonify({"message": "최대 인원을 초과하여 입장할 수 없습니다"}), 403
     elif room_info and room_info[1] != '준비':
-        return jsonify({"message": "Room is not ready"}), 403
+        return jsonify({"message": "이미 시작되었거나 종료된 게임입니다"}), 403
     else:
-        return jsonify({"message": "Room not found"}), 404
+        return jsonify({"message": "존재하지 않는 방입니다"}), 404
     
 
 @app.route('/api/game_start', methods=['GET'])
@@ -147,15 +170,15 @@ def game_start():
 
     room_info = execute_query('SELECT creator_id, status FROM room WHERE id = %s', (room_id,), fetchone=True)
     if room_info is None:
-        return jsonify({"message": "Room not found"}), 404
+        return jsonify({"message": "방이 존재하지 않습니다"}), 404
 
     creator_id, current_status = room_info
 
     if current_status != '준비':
-        return jsonify({"message": "Game cannot start unless the room is in '준비' status"}), 403
+        return jsonify({"message": "이미 시작하거나 종료된 게임입니다"}), 403
 
     if creator_id != user_id:
-        return jsonify({"message": "Only the room creator can start the game"}), 403
+        return jsonify({"message": "게임은 방을 개설한 사람만 시작할 수 있습니다"}), 403
 
     execute_query('UPDATE room SET status = %s WHERE id = %s', ('진행', room_id), commit=True)
 
@@ -207,15 +230,15 @@ def collect_keyword(word):
 
         if total_users == keywords_collected:
             threading.Thread(target=send_game_start, args=(room_id, room_users_info)).start()
-            return jsonify({"message": f"Keyword '{word}' collected", "status": "All users have submitted keywords"}), 200
+            return jsonify({"message": f"'{nickname}' Keyword collected", "status": "All users have submitted keywords"}), 200
         else:
             conn.send(body=json.dumps({"status": f"{keywords_collected}/{total_users} users have submitted keywords", 'members': room_users_info}), destination='/topic/'+str(room_id))
-            return jsonify({"message": f"Keyword '{word}' collected", "status": f"{keywords_collected}/{total_users} users have submitted keywords"}), 200
+            return jsonify({"message": f"'{nickname}' Keyword collected", "status": f"{keywords_collected}/{total_users} users have submitted keywords"}), 200
 
     except psycopg2.IntegrityError:
-        return jsonify({"message": "Keyword for this room and user has already been collected"}), 409
+        return jsonify({"message": "이미 키워드를 입력하여 재입력할 수 없습니다"}), 409
     except Exception as e:
-        return jsonify({"message": str(e)}), 500
+        return jsonify({"message": "알 수 없는 이유로 키워드 저장에 실패하였습니다"}), 500
 
 
 @app.route('/api/check_similarity/<word>', methods=['GET'])
@@ -233,7 +256,7 @@ def check_similarity(word):
     keywords = execute_query('SELECT g.user_id, u.name, g.keyword FROM game g JOIN "user" u ON g.user_id = u.id WHERE g.room_id = %s', (room_id,), fetchall=True)
 
     if not keywords:
-        return jsonify({"message": "No keywords found for this room"}), 404
+        return jsonify({"message": "서버에서 키워드를 찾을 수 없습니다"}), 404
     results = []
     for answers in keywords:
         answer_texts.append(answers[2])
